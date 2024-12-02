@@ -18,13 +18,14 @@ describe('Events', () => {
     
     it('Create Event: In Person', function(){
         cy.visit('https://app.levo.in.net/workspace/go-insta-care/events');
+        cy.wait(10000);
         cy.contains('button', 'Create Event').click();
         cy.generateRandomString(10).then((randomString) => {
             cy.get('[id="title"]').type(randomString);
           });
-          cy.get('[id="lcoation"]').type('Las Vegas Convention Center');
-          cy.get('input[placeholder="e.g. \\&quot;in 2 hours or tomorrow at 5pm\\&quot;"]').eq(0).type('Next Week 5pm');
-          cy.get('input[placeholder="e.g. \\&quot;in 2 hours or tomorrow at 5pm\\&quot;"]').eq(1).type('Next Week 6pm');
-
+        cy.get('[id="lcoation"]').type('Las Vegas Convention Center');
+        cy.get('input[placeholder="e.g. \\&quot;in 2 hours or tomorrow at 5pm\\&quot;"]').eq(0).type('Next Week 5pm');
+        cy.get('input[placeholder="e.g. \\&quot;in 2 hours or tomorrow at 5pm\\&quot;"]').eq(1).type('Next Week 6pm');
+        cy.contains('button', 'Create Event').click();
       })
 })
