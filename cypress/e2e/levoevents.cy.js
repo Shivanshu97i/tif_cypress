@@ -1,4 +1,5 @@
 describe('Events', () => {
+
     //Fixture: LogIn before each test
     beforeEach(function(){
         cy.fixture('login.json').as('loginData');
@@ -102,8 +103,7 @@ describe('Events', () => {
         cy.get('[id="code"]').click().type('Test101');
         cy.get('[id="max_redemptions"]').click().type('10');
         cy.contains('div', /^Percent$/).click();
-        cy.get('[id="percent_off"]').clear();
-        cy.get('[id="percent_off"]').type('20');
+        cy.get('[id="percent_off"]').clear().type('20');
         // cy.get('button[role="checkbox"]').eq(0).click();
         cy.contains('button', /^Add$/).click();
         cy.wait(5000);
@@ -120,7 +120,36 @@ describe('Events', () => {
         cy.contains('button', 'Save').click();
         cy.wait(10000);
 
-        
+        //Archive Ticket
+        // cy.get('[title="Click to edit ticket"]').eq(0).click();
+        // cy.wait(5000);
+        // cy.contains('button', /^Archive$/).click();
+        // cy.wait(10000);
+        // cy.get('[title="Click to edit ticket"]').eq(0).contains('div', /^Archived$/).should('exist').and('be.visible');
+        // cy.get('[title="Click to edit ticket"]').eq(0).click();
+        // cy.wait(5000);
+        // cy.contains('button', /^Unarchive$/).click();
+        // cy.wait(10000);
+        // cy.get('[title="Click to edit ticket"]').eq(0).contains('div', /^Archived$/).should('not.exist').and('not.be.visible');
+
+        //Archive Coupon
+        cy.get('button[aria-label="Archive"]').eq(0).click();
+        cy.wait(3000);
+        cy.get('button[aria-label="Unarchive"]').eq(0).should('exist');
+        cy.get('button[aria-label="Unarchive"]').eq(0).click();
+        cy.wait(3000);
+        cy.get('button[aria-label="Archive"]').eq(0).should('exist');
+        cy.wait(5000);
+
+        //Editing a Ticket
+        cy.get('[title="Click to edit ticket"]').eq(0).click();
+        cy.get('#title').invoke('val').as('ticketTitle');
+        cy.get('#title').click().clear().type('Updated Ticket Title');
+        cy.contains('button', /^Save Ticket$/).click();
+        cy.wait(5000);
+        cy.get('@ticketTitle').then((ticketTitle) => {
+          cy.get('[title="Click to edit ticket"]').eq(0).find('h3').eq(0).should('not.contain', ticketTitle);
+        })
       })
 
       // it('Create Event: Virtual', function(){
