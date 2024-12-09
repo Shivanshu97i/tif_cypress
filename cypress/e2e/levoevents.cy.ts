@@ -3,36 +3,26 @@ describe('Events', () => {
     //Fixture: LogIn before each test
     beforeEach(function(){
         cy.fixture('login.json').as('loginData');
-        cy.get('@loginData').then((loginData) => {
-          //Viewport  
-          cy.viewport(1920,1080);
-
-            cy.visit('https://app.levo.in.net/beta/signin');
-            cy.get('body').should('contain', 'levo');
-            cy.get('body').should('contain', 'Sign In');
-            cy.contains('button', 'Use Password Instead').click();
-        
-            // Use login data
-            cy.get('[id="email"]').type(loginData.email);
-            cy.get('[id="password"]').type(loginData.password);
-            cy.contains('button', 'Continue').click();
-            cy.wait(10000);
-            cy.visit('https://app.levo.in.net/workspace/go-insta-care/events');
-            cy.wait(10000);
-
-            //Creating event
-            cy.contains('button', 'Create Event').click();
-            cy.generateRandomString(10).then((randomString) => {
-              cy.get('[id="title"]').type(randomString);
-            });
-            cy.get('[id="location"]').type('Las Vegas Convention Center');
-            cy.wait(5000);
-            cy.contains('p', 'Las Vegas Convention Center, north hall, Paradise Road, Las Vegas, NV, USA').click();
-            cy.get('[data-testid="starts_at-date-input"] input').type('Next Week 5pm');
-            cy.get('[data-testid="ends_at-date-input"] input').type('Next Week 6pm');
-            cy.contains('button', /^Create Event\s*$/).click();
-            cy.wait(10000);
+        cy.get('@loginData').then((loginData: { email: string; password: string }) => {
+          cy.levoLogin(loginData);
+          cy.visit('/workspace/go-insta-care/events');
+          cy.wait(10000);
           });
+        //Auto Cleanup
+            
+
+        //Creating event
+        cy.contains('button', 'Create Event').click();
+        cy.generateRandomString(10).then((randomString: string) => {
+          cy.get('[id="title"]').type(randomString);
+        });
+        cy.get('[id="location"]').type('Las Vegas Convention Center');
+        cy.wait(5000);
+        cy.contains('p', 'Las Vegas Convention Center, north hall, Paradise Road, Las Vegas, NV, USA').click();
+        cy.get('[data-testid="starts_at-date-input"] input').type('Next Week 5pm');
+        cy.get('[data-testid="ends_at-date-input"] input').type('Next Week 6pm');
+        cy.contains('button', /^Create Event\s*$/).click();
+        cy.wait(10000);
       });
     
     it('Create Event: In Person With all options enabled for free and paid ticket', function(){
@@ -40,7 +30,7 @@ describe('Events', () => {
         cy.get('[id="description"]').click().type("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
         cy.wait(5000);
         cy.get('[id="max_capacity"]').type("100");
-        cy.generateRandomString(10).then((randomString) => {
+        cy.generateRandomString(10).then((randomString: string) => {
           cy.get('[id="contact_email"]').type(randomString+'@'+'gmail.com');
         });
         cy.wait(5000);
@@ -51,7 +41,7 @@ describe('Events', () => {
         //Free Ticket
         cy.contains('button', 'Add Ticket').click();
         cy.wait(2000);
-        cy.generateRandomString(10).then((randomString) => {
+        cy.generateRandomString(10).then((randomString: string) => {
           cy.get('[id="title"]').type(randomString);
         });
         cy.get('[id="description"]').click().type('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.');
@@ -69,7 +59,7 @@ describe('Events', () => {
         //Paid Ticket
         cy.contains('button', 'Add Ticket').click();
         cy.wait(2000);
-        cy.generateRandomString(10).then((randomString) => {
+        cy.generateRandomString(10).then((randomString: string) => {
           cy.get('[id="title"]').type(randomString);
         });
         cy.get('[id="description"]').click().type('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.');
@@ -143,11 +133,11 @@ describe('Events', () => {
 
         //Editing a Ticket
         cy.get('[title="Click to edit ticket"]').eq(0).click();
-        cy.get('#title').invoke('val').as('ticketTitle');
+        cy.get('#title').invoke('val').as('ticketTitle' as string);
         cy.get('#title').click().clear().type('Updated Ticket Title');
         cy.contains('button', /^Save Ticket$/).click();
         cy.wait(5000);
-        cy.get('@ticketTitle').then((ticketTitle) => {
+        cy.get('@ticketTitle').then((ticketTitle: string) => {
           cy.get('[title="Click to edit ticket"]').eq(0).find('h3').eq(0).should('not.contain', ticketTitle);
         })
       })
