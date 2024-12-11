@@ -10,23 +10,17 @@ describe('Events', () => {
           });
           
         //Auto Cleanup: If for any reason the previous event created by automation was not deleted.
-        // cy.get('input[name="search"]').click().type('Automation Event');
-        // cy.wait(10000);
-        // cy.get('table').then((table) => {
-        //   const pElements = table.find('p').filter((index, element) => {
-        //     return Cypress.$(element).text().match(/^Automation Event$/);
-        //   });
-        
-        //   if (pElements.length > 0) {
-        //     // If 'Automation Event' is found
-        //     pElements.click();
-        //     cy.wait(10000);
-        //     cy.cleanup(); // Execute cleanup if the element is found
-        //   } else {
-            
-        //     cy.log('Automation Event not found, skipping cleanup.');
-        //   }
-        //   });
+        cy.get('input[name="search"]').click().type('Automation Event');
+        cy.wait(10000);
+        cy.get('table').then((table) => {
+          if (table.find('td').text().includes('No results.')) {
+            cy.log('No results found in the table.');
+          } else {
+            cy.get('table').contains('p', 'Automation Event').click();
+            cy.wait(10000);
+            cy.cleanup();
+          }
+        });
 
 
         //Creating event
