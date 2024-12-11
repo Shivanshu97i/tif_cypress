@@ -10,23 +10,23 @@ describe('Events', () => {
           });
           
         //Auto Cleanup: If for any reason the previous event created by automation was not deleted.
-        cy.get('input[name="search"]').click().type('Automation Event');
-        cy.wait(10000);
-        cy.get('table').then((table) => {
-          const pElements = table.find('p').filter((index, element) => {
-            return Cypress.$(element).text().match(/^Automation Event$/);
-          });
+        // cy.get('input[name="search"]').click().type('Automation Event');
+        // cy.wait(10000);
+        // cy.get('table').then((table) => {
+        //   const pElements = table.find('p').filter((index, element) => {
+        //     return Cypress.$(element).text().match(/^Automation Event$/);
+        //   });
         
-          if (pElements.length > 0) {
-            // If 'Automation Event' is found
-            pElements.click();
-            cy.wait(10000);
-            cy.cleanup(); // Execute cleanup if the element is found
-          } else {
-            // If the element does not exist
-            cy.log('Automation Event not found, skipping cleanup.');
-          }
-          });
+        //   if (pElements.length > 0) {
+        //     // If 'Automation Event' is found
+        //     pElements.click();
+        //     cy.wait(10000);
+        //     cy.cleanup(); // Execute cleanup if the element is found
+        //   } else {
+            
+        //     cy.log('Automation Event not found, skipping cleanup.');
+        //   }
+        //   });
 
 
         //Creating event
