@@ -1,30 +1,3 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-
-// Cypress.Commands.add is declared globally in the Cypress types
 Cypress.Commands.add('generateRandomString', (length: number): Cypress.Chainable<string> => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
@@ -53,4 +26,19 @@ Cypress.Commands.add('levoLogin', (loginData: { email: string; password: string 
   cy.wait(10000);
 });
 
-  
+Cypress.Commands.add('cleanup', (): void => {
+  cy.get('body').then((body) => {
+    if (body.find('button:contains("Unpublish")').length > 0) {
+      // Check Unpublish button exists
+      cy.contains('button', 'Unpublish').click();
+      cy.wait(30000);
+    } else {
+      cy.log('Unpublish button does not exist.');
+    }
+  }).then(() => {
+    cy.get('svg.lucide-settings').parents('button').first().click();
+    cy.contains('button', 'Move to Trash').click();
+    cy.wait(2000);
+    cy.contains('button', 'Confirm').click();
+  });
+});

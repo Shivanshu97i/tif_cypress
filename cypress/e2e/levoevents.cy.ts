@@ -8,14 +8,30 @@ describe('Events', () => {
           cy.visit('/workspace/go-insta-care/events');
           cy.wait(10000);
           });
-        //Auto Cleanup
-            
+          
+        //Auto Cleanup: If for any reason the previous event created by automation was not deleted.
+        cy.get('input[name="search"]').click().type('Automation Event');
+        cy.wait(10000);
+        cy.get('table').then((table) => {
+          const pElements = table.find('p').filter((index, element) => {
+            return Cypress.$(element).text().match(/^Automation Event$/);
+          });
+        
+          if (pElements.length > 0) {
+            // If 'Automation Event' is found
+            pElements.click();
+            cy.wait(10000);
+            cy.cleanup(); // Execute cleanup if the element is found
+          } else {
+            // If the element does not exist
+            cy.log('Automation Event not found, skipping cleanup.');
+          }
+          });
+
 
         //Creating event
         cy.contains('button', 'Create Event').click();
-        cy.generateRandomString(10).then((randomString: string) => {
-          cy.get('[id="title"]').type(randomString);
-        });
+        cy.get('[id="title"]').type('Automation Event');
         cy.get('[id="location"]').type('Las Vegas Convention Center');
         cy.wait(5000);
         cy.contains('p', 'Las Vegas Convention Center, north hall, Paradise Road, Las Vegas, NV, USA').click();
@@ -140,6 +156,28 @@ describe('Events', () => {
         cy.get('@ticketTitle').then((ticketTitle: string) => {
           cy.get('[title="Click to edit ticket"]').eq(0).find('h3').eq(0).should('not.contain', ticketTitle);
         })
+
+        //Editing a coupon
+        cy.get('button[aria-label="edit"]').eq(0).click();
+        cy.wait(5000);
+        cy.get('[id="code"]').click().clear().type('UPDATEDCODE');
+        cy.contains('button', /^Add$/).click();
+        cy.wait(5000);
+        cy.get('table').contains('p', /^UPDATEDCODE$/).should('exist');
+
+        //Attendees Page
+
+        //Adding a attendee
+        cy.contains('button', /^Attendees$/).should('exist').click();
+        cy.get('button[aria-label="Add Attendee"]').should('exist').click();
+        cy.get('input[id="name"]').should('exist').click().type('Dummy Attendee');
+        cy.get('input[id="email"]').should('exist').click().type('test@dummy.com');
+        cy.get('div[id="ticket"]').find('div').should('exist').click();
+        cy.contains('div', /^Updated Ticket Title$/).should('exist').click();
+        cy.contains('button', /^Add$/).should('exist').click();
+        //Remove if attendees working
+        cy.contains('svg[class="lucide lucide-x h-4 w-4"]').should('exist').click();
+
       })
 
       // it('Create Event: Virtual', function(){
@@ -158,11 +196,6 @@ describe('Events', () => {
 
       afterEach(() => {
         //Cleanup
-        cy.contains('button', 'Unpublish').click();
-        cy.wait(30000);
-        cy.get('svg.lucide-settings').parents('button').first().click(); 
-        cy.contains('button', 'Move to Trash').click();
-        cy.wait(2000);
-        cy.contains('button', 'Confirm').click();
+        cy.cleanup();
       });
 })
