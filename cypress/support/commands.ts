@@ -31,7 +31,7 @@ Cypress.Commands.add('cleanup', (): void => {
     if (body.find('button:contains("Unpublish")').length > 0) {
       // Check Unpublish button exists
       cy.contains('button', 'Unpublish').click();
-      cy.wait(30000);
+      cy.wait(15000);
     } else {
       cy.log('Unpublish button does not exist.');
     }

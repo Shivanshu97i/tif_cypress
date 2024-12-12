@@ -56,7 +56,9 @@ describe('Events', () => {
         });
         cy.get('[id="description"]').click().type('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.');
         cy.contains('div', 'Advance Settings').click();
+        cy.get('button[id="waitlist_enabled"]').should('not.exist');
         cy.get('[id="quantity"]').type("100");
+        cy.get('button[id="waitlist_enabled"]').should('exist').click();
         cy.get('[id="requires_approval"]').click();
         cy.get('[id="allow_start_date"]').click();
         cy.get('[data-testid="starts_at-date-input"] input').type('Tomorrow at 5pm');
@@ -77,7 +79,9 @@ describe('Events', () => {
         cy.get('[id="base_price"]').click().type('1200');
         cy.get('[id="unit_amount"]').click().type('1000');
         cy.contains('div', 'Advance Settings').click();
+        cy.get('button[id="waitlist_enabled"]').should('not.exist');
         cy.get('[id="quantity"]').type("100");
+        cy.get('button[id="waitlist_enabled"]').should('exist').click();
         cy.get('[id="requires_approval"]').click();
         cy.get('[id="allow_start_date"]').click();
         cy.get('[data-testid="starts_at-date-input"] input').type('Tomorrow at 5pm');
@@ -121,16 +125,16 @@ describe('Events', () => {
         cy.wait(10000);
 
         //Archive Ticket
-        // cy.get('[title="Click to edit ticket"]').eq(0).click();
-        // cy.wait(5000);
-        // cy.contains('button', /^Archive$/).click();
-        // cy.wait(10000);
-        // cy.get('[title="Click to edit ticket"]').eq(0).contains('div', /^Archived$/).should('exist').and('be.visible');
-        // cy.get('[title="Click to edit ticket"]').eq(0).click();
-        // cy.wait(5000);
-        // cy.contains('button', /^Unarchive$/).click();
-        // cy.wait(10000);
-        // cy.get('[title="Click to edit ticket"]').eq(0).contains('div', /^Archived$/).should('not.exist').and('not.be.visible');
+        cy.get('[title="Click to edit ticket"]').eq(0).click();
+        cy.wait(5000);
+        cy.contains('button', /^Archive$/).click();
+        cy.wait(10000);
+        cy.get('[title="Click to edit ticket"]').eq(0).contains('div', /^Archived$/).should('exist').and('be.visible');
+        cy.get('[title="Click to edit ticket"]').eq(0).click();
+        cy.wait(5000);
+        cy.contains('button', /^Unarchive$/).click();
+        cy.wait(10000);
+        cy.get('[title="Click to edit ticket"]').eq(0).contains('div', /^Archived$/).should('not.exist');
 
         //Archive Coupon
         cy.get('button[aria-label="Archive"]').eq(0).click();
@@ -160,18 +164,44 @@ describe('Events', () => {
         cy.get('table').contains('p', /^UPDATEDCODE$/).should('exist');
 
         //Attendees Page
-
         //Adding a attendee
         cy.contains('button', /^Attendees$/).should('exist').click();
         cy.get('button[aria-label="Add Attendee"]').should('exist').click();
         cy.get('input[id="name"]').should('exist').click().type('Dummy Attendee');
         cy.get('input[id="email"]').should('exist').click().type('test@dummy.com');
-        cy.get('div[id="ticket"]').find('div').should('exist').click();
+        cy.get('div[id="ticket"]').should('exist').click();
+        cy.wait(3000);
         cy.contains('div', /^Updated Ticket Title$/).should('exist').click();
         cy.contains('button', /^Add$/).should('exist').click();
+        cy.wait(5000);
         //Remove if attendees working
-        cy.contains('svg[class="lucide lucide-x h-4 w-4"]').should('exist').click();
+        // cy.contains('svg[class="lucide lucide-x h-4 w-4"]').should('exist').click();
+        cy.get('table').contains('td', 'Dummy Attendee').should('exist');
+        cy.get('button[aria-label="Resend Confirmation"]').should('exist').click();
+        cy.wait(5000);
 
+        //Search Attendee
+        cy.get('input[name="search"]').should('exist').click().clear().type('Dummy Attendee');
+        cy.wait(5000);
+        cy.get('table').contains('td', 'Dummy Attendee').should('exist');
+
+        //Actions Attendee
+        cy.get('button[aria-label="Refresh"]').should('exist').click();
+        cy.get('button[aria-label="Select all"]').should('exist').click();
+        cy.wait(3000);
+        cy.contains('button', /^Send Payment Link$/).should('exist').click();
+        cy.wait(3000);
+        cy.get('button[aria-label="Select all"]').should('exist').click();
+        cy.contains('button', /^Check In$/).should('exist').click();
+        cy.wait(3000);
+        cy.get('button[aria-label="Select all"]').should('exist').click();
+        cy.contains('button', /^Delete$/).should('exist').click();
+        cy.wait(1000);
+        cy.contains('button', /^Confirm$/).should('exist').click();
+        cy.wait(3000);
+
+        //Export Attendee
+        
       })
 
       // it('Create Event: Virtual', function(){
