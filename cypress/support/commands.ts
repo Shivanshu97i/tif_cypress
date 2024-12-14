@@ -36,7 +36,7 @@ Cypress.Commands.add('cleanup', (): void => {
       cy.log('Unpublish button does not exist.');
     }
   }).then(() => {
-    cy.get('svg.lucide-settings').parents('button').first().click();
+    cy.get('[data-testid="event-settings"]').find('button').eq(0).click();
     cy.contains('button', 'Move to Trash').click();
     cy.wait(2000);
     cy.contains('button', 'Confirm').click();
