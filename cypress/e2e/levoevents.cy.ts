@@ -29,8 +29,10 @@ describe('Events', () => {
         cy.get('[id="location"]').type('Las Vegas Convention Center');
         cy.wait(5000);
         cy.contains('p', 'Las Vegas Convention Center, north hall, Paradise Road, Las Vegas, NV, USA').click();
-        cy.get('[data-testid="starts_at-date-input"] input').type('Next Week 5pm');
-        cy.get('[data-testid="ends_at-date-input"] input').type('Next Week 6pm');
+        cy.get('[id="starts_at"]').type('18 December, 2024 12:00 AM');
+        cy.get('[id="title"]').click();
+        cy.get('[id="ends_at"]').type('19 December, 2024 12:00 AM');
+        cy.get('[id="title"]').click();
         cy.contains('button', /^Create Event\s*$/).click();
         cy.wait(10000);
       });
@@ -60,10 +62,10 @@ describe('Events', () => {
         cy.get('[id="quantity"]').type("100");
         cy.get('button[id="waitlist_enabled"]').should('exist').click();
         cy.get('[id="requires_approval"]').click();
-        cy.get('[id="allow_start_date"]').click();
-        cy.get('[data-testid="starts_at-date-input"] input').type('Tomorrow at 5pm');
-        cy.get('[id="end_date"]').click();
-        cy.get('[data-testid="ends_at-date-input"] input').type('Next Week 6pm');
+        // cy.get('[id="allow_start_date"]').click();
+        // cy.get('[data-testid="starts_at-date-input"] input').type('Tomorrow at 5pm');
+        // cy.get('[id="end_date"]').click();
+        // cy.get('[data-testid="ends_at-date-input"] input').type('Next Week 6pm');
         cy.get('[id="allow_to_upgrade"]').click();
         cy.get('[id="include_in_upgrade"]').click();
         cy.contains('button', 'Create Ticket').click();
@@ -83,16 +85,23 @@ describe('Events', () => {
         cy.get('[id="quantity"]').type("100");
         cy.get('button[id="waitlist_enabled"]').should('exist').click();
         cy.get('[id="requires_approval"]').click();
-        cy.get('[id="allow_start_date"]').click();
-        cy.get('[data-testid="starts_at-date-input"] input').type('Tomorrow at 5pm');
-        cy.get('[id="end_date"]').click();
-        cy.get('[data-testid="ends_at-date-input"] input').type('Next Week 6pm');
+        // cy.get('[id="allow_start_date"]').click();
+        // cy.get('[data-testid="starts_at-date-input"] input').type('Tomorrow at 5pm');
+        // cy.get('[id="end_date"]').click();
+        // cy.get('[data-testid="ends_at-date-input"] input').type('Next Week 6pm');
         cy.get('[id="allow_to_upgrade"]').click();
         cy.get('[id="include_in_upgrade"]').click();
         cy.contains('button', 'Create Ticket').click();
         cy.contains('button', 'Save').click();
         cy.wait(10000);
         
+        //Registration Switch
+        cy.get('[data-testid="registration-switch-text"]').should('exist').contains('Currently accepting registrations. Turn this off to prevent new guests from registering for this event.');
+        cy.get('[data-testid="registration-switch"]').should('exist').click();
+        cy.get('[data-testid="registration-switch-text"]').should('exist').contains('Currently not accepting registrations. Turn this on to allow new guests to register for this event.');
+        cy.get('[data-testid="registration-switch"]').should('exist').click();
+        cy.get('[data-testid="registration-switch-text"]').should('exist').contains('Currently accepting registrations. Turn this off to prevent new guests from registering for this event.');
+
         //Coupon
          //Free
         cy.contains('button', 'Add Coupons').click();
@@ -124,17 +133,6 @@ describe('Events', () => {
         cy.contains('button', 'Save').click();
         cy.wait(10000);
 
-        //Archive Ticket
-        cy.get('[title="Click to edit ticket"]').eq(0).click();
-        cy.wait(5000);
-        cy.contains('button', /^Archive$/).click();
-        cy.wait(10000);
-        cy.get('[title="Click to edit ticket"]').eq(0).contains('div', /^Archived$/).should('exist').and('be.visible');
-        cy.get('[title="Click to edit ticket"]').eq(0).click();
-        cy.wait(5000);
-        cy.contains('button', /^Unarchive$/).click();
-        cy.wait(10000);
-        cy.get('[title="Click to edit ticket"]').eq(0).contains('div', /^Archived$/).should('not.exist');
 
         //Archive Coupon
         cy.get('button[aria-label="Archive"]').eq(0).click();
@@ -152,8 +150,28 @@ describe('Events', () => {
         cy.contains('button', /^Save Ticket$/).click();
         cy.wait(5000);
         cy.get('@ticketTitle').then((ticketTitle: string) => {
-          cy.get('[title="Click to edit ticket"]').eq(0).find('h3').eq(0).should('not.contain', ticketTitle);
+          cy.get('[data-testid="Updated Ticket Title"]').find('h3').eq(0).should('not.contain', ticketTitle);
         })
+
+        //Archive Ticket
+        cy.get('[data-testid="Updated Ticket Title"]').eq(0).click();
+        cy.wait(5000);
+        cy.contains('button', /^Archive$/).click();
+        cy.wait(10000);
+        cy.get('[data-testid="Updated Ticket Title"]').contains('div', /^Archived$/).should('exist').and('be.visible');
+        cy.get('[data-testid="Updated Ticket Title"]').click();
+        cy.wait(5000);
+        cy.contains('button', /^Unarchive$/).click();
+        cy.wait(10000);
+        cy.get('[data-testid="Updated Ticket Title"]').contains('div', /^Archived$/).should('not.exist');
+
+        //External Ticketing
+        cy.get('[data-testid="externalticketing-switch"]').should('exist').click();
+        cy.get('[data-testid="externalticketing-url"]').should('exist');
+        cy.get('[data-testid="Updated Ticket Title"]').should('not.be.visible');
+        cy.get('[data-testid="externalticketing-switch"]').should('exist').click();
+        cy.get('[data-testid="externalticketing-url"]').should('not.be.visible');
+        cy.get('[data-testid="Updated Ticket Title"]').should('be.visible');
 
         //Editing a coupon
         cy.get('button[aria-label="edit"]').eq(0).click();
