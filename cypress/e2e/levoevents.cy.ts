@@ -219,7 +219,7 @@ describe('Events', () => {
         
       })
 
-      it.only('Create Event: Virtual', function(){
+      it('Create Event: Virtual', function(){
         cy.visit('https://app.levo.in.net/workspace/go-insta-care/events');
         cy.wait(10000);
         cy.contains('button', 'Create Event ').click();
